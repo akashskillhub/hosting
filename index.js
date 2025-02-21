@@ -1,6 +1,7 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const cors = require("cors")
+const path = require("path")
 require("dotenv").config()
 
 const app = express()
@@ -9,11 +10,13 @@ app.use(cors({
     origin: "http://localhost:5173",
     credentials: true
 })) // CORS 
+app.use(express.static("dist"))
 
 //                      call this 👇 if url has http://localhost:5000/api/blog
 app.use("/api/blog", require("./blog.route"))
 app.use("*", (req, res) => {
-    res.status(404).json({ message: "resource not found" })
+    res.sendFile(path.join(__dirname, "dist", "index.html"))
+    // res.status(404).json({ message: "resource not found" })
 })
 
 mongoose.connect(process.env.MONGO_URL)
